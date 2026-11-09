@@ -22,7 +22,15 @@ export default function OrderIntentForm({
   onPrepare,
 }: OrderIntentFormProps) {
   const countries = product.ships_to || [];
-  const [address, setAddress] = useState<ShippingAddress>({
+  const availableSkus = product.skus.filter((item) => item.stock > 0);
+  const initialSkuId = availableSkus.some((item) => item.sku_id === skuId)
+    ? skuId
+    : availableSkus.find((item) => item.sku_id === product.default_sku_id)
+        ?.sku_id ||
+      availableSkus[0]?.sku_id ||
+      "";
+  const [selectedSkuId, setSelectedSkuId] = useState(initialSkuId),
+    [address, setAddress] = useState<ShippingAddress>({
       recipient_name: "",
       country: countries.includes("CN") ? "CN" : countries[0] || "",
       state: "",
@@ -34,13 +42,15 @@ export default function OrderIntentForm({
     [quantity, setQuantity] = useState("1"),
     [localError, setLocalError] = useState<string | null>(null),
     [submitting, setSubmitting] = useState(false);
-  const sku = product.skus.find((item) => item.sku_id === skuId),
+  const sku = availableSkus.find((item) => item.sku_id === selectedSkuId),
     locked = busy || submitting,
     quantityValue = Number(quantity),
     quantityValid =
       quantity.trim() !== "" &&
       Number.isSafeInteger(quantityValue) &&
-      quantityValue > 0;
+      quantityValue > 0 &&
+      !!sku &&
+      quantityValue <= sku.stock;
   const field = (key: keyof ShippingAddress, value: string) =>
     setAddress((current) => ({ ...current, [key]: value }));
 
@@ -48,7 +58,11 @@ export default function OrderIntentForm({
     event.preventDefault();
     if (locked) return;
     if (!sku || !quantityValid) {
-      setLocalError("请选择有效规格，并填写正整数数量。");
+      setLocalError(
+        sku
+          ? `购买数量应为1到${sku.stock}之间的整数。`
+          : "当前没有库存大于0的可选型号。",
+      );
       return;
     }
     const normalized = Object.fromEntries(
@@ -108,7 +122,8 @@ export default function OrderIntentForm({
       <div className="order-intent-product">
         <strong>{product.title}</strong>
         <span>
-          {sku?.spec || "规格不可用"} · {skuId}
+          {sku?.spec || "暂无可购型号"}
+          {sku ? ` · ${sku.sku_id}` : ""}
         </span>
         {sku && (
           <div>
@@ -118,12 +133,58 @@ export default function OrderIntentForm({
         )}
       </div>
       <form className="order-intent-form" onSubmit={submit}>
+        <fieldset className="order-intent-skus" disabled={locked}>
+          <legend>
+            选择产品型号 <span aria-hidden="true">*</span>
+          </legend>
+          {product.skus.length ? (
+            product.skus.map((item) => {
+              const soldOut = item.stock <= 0;
+              return (
+                <label
+                  key={item.sku_id}
+                  className={`${selectedSkuId === item.sku_id ? "chosen" : ""} ${soldOut ? "sold-out" : ""}`}
+                >
+                  <input
+                    name="sku_id"
+                    type="radio"
+                    value={item.sku_id}
+                    checked={selectedSkuId === item.sku_id}
+                    disabled={locked || soldOut}
+                    required={!soldOut}
+                    onChange={() => {
+                      setSelectedSkuId(item.sku_id);
+                      setQuantity((current) => {
+                        const value = Number(current);
+                        return Number.isSafeInteger(value) && value > item.stock
+                          ? String(item.stock)
+                          : current;
+                      });
+                      setLocalError(null);
+                    }}
+                  />
+                  <span>
+                    <strong>{item.spec}</strong>
+                    <small>{item.sku_id}</small>
+                  </span>
+                  <span>
+                    <strong>{money(item.price_major, item.currency)}</strong>
+                    <small>{soldOut ? "暂无库存" : `可购 ${item.stock} 件`}</small>
+                  </span>
+                </label>
+              );
+            })
+          ) : (
+            <p className="order-intent-help">当前商品没有可核验的型号信息。</p>
+          )}
+        </fieldset>
         <label>
           购买数量 <span aria-hidden="true">*</span>
           <input
             name="quantity"
             type="number"
             min="1"
+            max={sku?.stock}
             step="1"
             required
             value={quantity}
@@ -133,7 +194,9 @@ export default function OrderIntentForm({
           />
         </label>
         <p className="order-intent-help">
-          库存以服务端生成确认单和提交时的检查为准。
+          {sku
+            ? `当前型号最多可选 ${sku.stock} 件；生成确认单时服务端会再次核对实时库存。`
+            : "请选择库存大于0的型号。"}
         </p>
         <fieldset disabled={locked}>
           <legend>收货信息</legend>

@@ -333,6 +333,53 @@
   margin: 24px 0 0;
   min-width: 0;
 }
+.order-intent-form .order-intent-skus {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+.order-intent-skus > label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 13px 14px;
+  border: 1px solid #dce2d6;
+  border-radius: 10px;
+  background: #fffefa;
+  cursor: pointer;
+}
+.order-intent-skus > label.chosen {
+  border-color: #7f9a76;
+  background: #f1f4e9;
+}
+.order-intent-skus > label.sold-out {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+.order-intent-skus input {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--green);
+}
+.order-intent-form .order-intent-skus label > span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.order-intent-form .order-intent-skus label > span:last-child {
+  text-align: right;
+}
+.order-intent-skus strong {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 500;
+}
+.order-intent-skus small {
+  color: #80906f;
+  font-size: 10px;
+}
 .order-intent-form legend {
   padding: 0;
   font-size: 14px;

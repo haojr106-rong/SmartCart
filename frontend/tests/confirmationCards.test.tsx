@@ -70,6 +70,20 @@ const product: ProductCard = {
       currency: "CNY",
       stock: 10,
     },
+    {
+      sku_id: "P1001-S2",
+      spec: "绿色",
+      price_major: 199,
+      currency: "CNY",
+      stock: 3,
+    },
+    {
+      sku_id: "P1001-S3",
+      spec: "灰色",
+      price_major: 179,
+      currency: "CNY",
+      stock: 0,
+    },
   ],
 };
 function render(
@@ -223,8 +237,14 @@ describe("准备表单不把展示价格和假地址变成下单事实", () => {
     expect(html).not.toContain("测试收件人");
     expect(html).toContain("生成确认单不会下单、扣库存或付款");
     expect(html).toContain("最终以确认单为准");
+    expect(html).toContain("选择产品型号");
+    expect(html).toContain("可购 10 件");
+    expect(html).toContain("可购 3 件");
+    expect(html).toContain("暂无库存");
+    expect(html).toMatch(/name="quantity"[^>]*max="10"/);
+    expect(html).toMatch(/name="sku_id"[^>]*disabled=""[^>]*value="P1001-S3"/);
   });
-  it("缺少配送范围或有效规格时不能生成确认", () => {
+  it("缺少配送范围时不能生成确认，并自动回退到第一个有库存型号", () => {
     const html = renderToStaticMarkup(
       <OrderIntentForm
         product={{ ...product, ships_to: [] }}
@@ -236,7 +256,25 @@ describe("准备表单不把展示价格和假地址变成下单事实", () => {
       />,
     );
     expect(html).toContain("配送范围待核验");
-    expect(html).toContain("规格不可用");
+    expect(html).toContain("黑色");
+    expect(html).toMatch(/disabled=""[^>]*>生成确认单/);
+  });
+  it("所有型号无库存时不能生成确认", () => {
+    const html = renderToStaticMarkup(
+      <OrderIntentForm
+        product={{
+          ...product,
+          skus: product.skus.map((sku) => ({ ...sku, stock: 0 })),
+        }}
+        skuId="P1001-S1"
+        busy={false}
+        error={null}
+        onClose={() => {}}
+        onPrepare={async () => true}
+      />,
+    );
+    expect(html).toContain("暂无可购型号");
+    expect(html).toContain("请选择库存大于0的型号");
     expect(html).toMatch(/disabled=""[^>]*>生成确认单/);
   });
 });
