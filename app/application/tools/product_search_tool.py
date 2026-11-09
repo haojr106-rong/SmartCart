@@ -139,6 +139,7 @@ def build_product_search_tool(usecase: CatalogSearchUseCase, bus: TradeEventBus,
                 return ToolChunk(content=[TextBlock(type="text", text="[error] max_weight_kg 必须是数值")], state=ToolResultState.ERROR)
         snapshot_ctx = ShoppingContext.current()
         context_exclusions = list(snapshot_ctx.excluded_material_tags) if snapshot_ctx else []
+        context_exclusions.extend(ShoppingContext.current_activated_material_tags())
         excluded_material_tags = list(
             dict.fromkeys([*context_exclusions, *(excluded_material_tags or [])]),
         )

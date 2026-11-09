@@ -39,6 +39,7 @@ _TOOL_LABELS = {
     "remember_preference_tool": "保存购物偏好",
     "forget_preference_tool": "删除购物偏好",
     "update_preference_tool": "修改购物偏好",
+    "activate_preferences_tool": "本轮使用长期偏好",
     "create_order_tool": "准备订单意向",
     "query_order_tool": "查询订单",
     "cancel_order_tool": "准备取消确认",

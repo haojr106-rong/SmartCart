@@ -75,7 +75,7 @@ async def test_distiller_requires_source_evidence_and_does_not_store_instruction
     with pytest.raises(MemoryUnavailable):await PreferenceDistiller(model).extract(BuyerPreference('a','like','你好'))
 
 @pytest.mark.asyncio
-async def test_agentscope_middleware_injects_query_scoped_memory(tmp_path):
+async def test_agentscope_middleware_offers_inactive_candidates_for_shopping(tmp_path):
     store=make(tmp_path);await store.append(BuyerPreference('a','like','喜欢裙子'))
     from agentscope.middleware import MiddlewareBase
     mw=BuyerMemoryMiddleware(store)
@@ -84,11 +84,28 @@ async def test_agentscope_middleware_injects_query_scoped_memory(tmp_path):
     token=ShoppingContext.set(ShoppingContextSnapshot('s','a','zh-CN','CNY'))
     try:
         async def handler(**kwargs):
-            assert '喜欢裙子' in kwargs['inputs'][0].get_text_content()
+            text=kwargs['inputs'][0].get_text_content()
+            assert '<preference-candidates' in text and '喜欢裙子' in text
+            assert '<buyer-preferences>' not in text
             yield 'ok'
-        events=[e async for e in mw.on_reply(None,{'inputs':[UserMsg('a','选衣服')]},handler)]
+        events=[e async for e in mw.on_reply(None,{'inputs':[UserMsg('a','推荐一件衣服')]},handler)]
         assert events==['ok']
 
+    finally: ShoppingContext.reset(token)
+
+
+@pytest.mark.asyncio
+async def test_agentscope_middleware_does_not_offer_preferences_for_product_knowledge(tmp_path):
+    store=make(tmp_path);await store.append(BuyerPreference('a','like','喜欢裙子'))
+    mw=BuyerMemoryMiddleware(store)
+    from app.infrastructure.context import ShoppingContextSnapshot
+    token=ShoppingContext.set(ShoppingContextSnapshot('s','a','zh-CN','CNY'))
+    try:
+        async def handler(**kwargs):
+            assert all(m.name!='preference_candidates' for m in kwargs['inputs'])
+            yield 'ok'
+        events=[e async for e in mw.on_reply(None,{'inputs':[UserMsg('a','羽绒服应该怎么选，有什么避坑点？')]},handler)]
+        assert events==['ok']
     finally: ShoppingContext.reset(token)
 
 

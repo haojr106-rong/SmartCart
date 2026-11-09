@@ -237,6 +237,7 @@ class MainAgentOrchestrator:
             currency=intent.currency,
         )
         token = ShoppingContext.set(snapshot)
+        ShoppingContext.clear_preference_activation(intent.buyer_id, session_id)
         started_at = time.monotonic()
         # 本轮 Token 预算（TOKEN_BUDGET_TOTAL=0时为 None，不启用四档降级）
         init_budget(self._token_budget_total)
@@ -402,6 +403,7 @@ class MainAgentOrchestrator:
                     self._loop_detector.reset(session_id)
                 if self._drift_detector is not None:
                     self._drift_detector.reset(session_id)
+                ShoppingContext.clear_preference_activation(intent.buyer_id, session_id)
                 ShoppingContext.reset(token)
 
     async def _preference_scope(self, buyer_id: str) -> str | None:
@@ -667,8 +669,7 @@ class MainAgentOrchestrator:
             return [UserMsg("memory_hint", f"当前持久偏好 revision={revision[:16]}：无。历史已撤回偏好不得恢复；本轮用户显式约束仍有效。"), user_msg]
 
         if getattr(self._preference_store, "semantic_memory", False):
-            # 正向偏好由 AgentScope 中间件召回；硬约束先落实到业务过滤上下文。
-            ShoppingContext.set_excluded_material_tags(material_exclusion_tags(preferences))
+            # 中间件只提供未启用候选；买家批准 activate_preferences_tool 后才进入筛选上下文。
             return [user_msg]
 
         # 按与本轮 query 的相关性挑选：偏好越攒越多时，全量铺进去会把真正相关的那几条稀释。

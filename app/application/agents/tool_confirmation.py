@@ -5,11 +5,27 @@ from agentscope.message import ToolCallState
 from agentscope.event import RequireUserConfirmEvent, UserConfirmResultEvent, ConfirmResult
 
 MEMORY_WRITE_TOOLS = frozenset({'remember_preference_tool','update_preference_tool','forget_preference_tool'})
+PREFERENCE_ACTIVATION_TOOLS = frozenset({'activate_preferences_tool'})
 
 class MemoryPermissionMiddleware(MiddlewareBase):
     def __init__(self,store=None):self.store=store
     async def on_check_permission(self,agent,input_kwargs,next_handler):
         call=input_kwargs['tool_call']
+        if call.name in PREFERENCE_ACTIVATION_TOOLS:
+            from app.infrastructure.context import ShoppingContext
+            ctx=ShoppingContext.current()
+            if ctx is None:return PermissionDecision(behavior=PermissionBehavior.DENY,message='缺少买家身份')
+            values=input_kwargs['tool_input']
+            ids,versions,statements=(values.get('memory_ids') or [],values.get('expected_versions') or [],values.get('statements') or [])
+            if not ids or not (len(ids)==len(versions)==len(statements)) or len(set(ids))!=len(ids):
+                return PermissionDecision(behavior=PermissionBehavior.DENY,message='偏好候选参数不完整或重复')
+            facts=await self.store.list_by_buyer(ctx.buyer_id)
+            current={(p.memory_id,p.version,p.statement) for p in facts}
+            if any(item not in current for item in zip(ids,versions,statements)):
+                return PermissionDecision(behavior=PermissionBehavior.DENY,message='偏好候选或版本已变化，请重新召回')
+            if call.state != ToolCallState.ALLOWED:
+                return PermissionDecision(behavior=PermissionBehavior.ASK,
+                    message='需要买家确认本轮是否使用这些长期偏好',bypass_immune=True)
         if call.name in {'update_preference_tool','forget_preference_tool'} and getattr(self.store,'semantic_memory',False):
             from app.infrastructure.context import ShoppingContext
             from app.application.memory.preference_selector import render_preference_lines

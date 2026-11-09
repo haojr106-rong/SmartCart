@@ -11,14 +11,10 @@ SubAgent as Tool 的调度工具——MainAgent 调它意味着"派一个专家�
 会被 2.0 批量 asyncio.gather 并发执行；agent.dispatch 事件带 started_at，
 完成时另发 tool.result 带 finished_at/elapsed_ms，可从事件流直接判定时间重叠。
 
-买家偏好由**本工具服务端注入**，不依赖主 Agent 把偏好抄进 demands：
-    buyer_id 从 ShoppingContext（ContextVar）取，作用域覆盖到 worker.reply()，
-    因此子 Agent 无需改签名就能拿到偏好。以前靠提示词要求“demands 必须自包含偏好”
-    是**软约束**：模型漏抄就静默降级为无偏好推荐，不报错、无告警。
+买家本轮批准的偏好由**本工具服务端注入**，未批准候选不会传给子 Agent。
 
 注意：本模块不能用 `from __future__ import annotations`（AgentScope schema 生成依赖运行时注解）。
 """
-import logging
 import json
 import re
 import time
@@ -30,17 +26,11 @@ from agentscope.tool import ToolChunk
 
 from app.application.agents.search_agent import SearchAgentFactory
 from app.application.agents.trade_agent import TradeAgentFactory
-from app.application.memory.preference_selector import (
-    PreferenceSelector,
-    render_preference_hint,
-)
+from app.application.memory.preference_selector import PreferenceSelector, render_preference_hint
 from app.domain.buyer.preference import PreferenceStore
 from app.infrastructure.context import ShoppingContext
 from app.infrastructure.eventbus import TradeEventBus, observe_run_events
 from app.infrastructure.budget import get_budget, rule_fallback_text
-
-logger = logging.getLogger(__name__)
-
 
 def build_task_dispatch_tool(
     search_factory: SearchAgentFactory,
@@ -51,27 +41,22 @@ def build_task_dispatch_tool(
     preference_top_k: int = 5,
     subagent_inject: bool = True,
 ):
-    selector = preference_selector or PreferenceSelector()
-
     async def _preference_hint(subagent_type: str, demands: str):
-        """给子 Agent 算出要注入的偏好块；无需注入时返回 None。
+        """只把买家本轮已经批准的偏好传给检索子 Agent。
 
         只给 search_agent 注入：trade_agent 只按给定的 product_id/sku_id 执行下单，
         偏好影响不了它的行为，注入纯属白花 token，还会给它多余的发挥空间。
         """
-        if not (subagent_inject and preference_store and subagent_type == "search_agent"):
+        if not (subagent_inject and subagent_type == "search_agent"):
             return None
         snapshot = ShoppingContext.current()
-        buyer_id = snapshot.buyer_id if snapshot else ""
-        if not buyer_id:
+        active = ShoppingContext.current_activated_preferences()
+        if not active:
             return None
-        try:
-            preferences = await preference_store.list_by_buyer(buyer_id)
-            selected = await selector.select(preferences, query=demands, top_k=preference_top_k)
-        except Exception as err:  # noqa: BLE001 —— 读记忆失败不能让派发挂掉
-            logger.warning("子 Agent 偏好注入跳过（读取失败）：%s", err)
-            return None
-        return render_preference_hint(selected) if selected else None
+        from app.domain.buyer.preference import BuyerPreference
+        selected = [BuyerPreference(snapshot.buyer_id, kind, statement,
+            memory_id=memory_id, version=version) for memory_id,kind,statement,version in active]
+        return render_preference_hint(selected)
 
     async def task_dispatch(
         subagent_type: Literal["search_agent", "trade_agent"],

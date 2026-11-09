@@ -7,7 +7,7 @@
     2. 内置 Task 计划四件套（TaskCreate / TaskUpdate / TaskList / TaskGet）
        ——2.0 官方计划管理，挂在 AgentState.tasks_context 上；
     3. task_dispatch——满足"可并行 / 上下文隔离 / 链深"任一条件时派发专家子 Agent；
-    4. remember_preference_tool——长期记忆写路径（读路径由 orchestrator 注入 hint）。
+    4. 偏好工具——长期记忆写入及买家批准后的本轮启用。
 
 每个 shopping_session_id 对应一个 MainAgent 实例，由 SessionRegistry 缓存；
 AgentState 每轮落盘 DATA_DIR/sessions/，服务重启后恢复多轮对话；
@@ -41,6 +41,7 @@ from app.application.prompts.loader import load_prompts
 from app.application.tools.forget_preference_tool import build_forget_preference_tool
 from app.application.tools.remember_preference_tool import build_remember_preference_tool
 from app.application.tools.update_preference_tool import build_update_preference_tool
+from app.application.tools.activate_preferences_tool import build_activate_preferences_tool
 from app.application.tools.task_dispatch_tool import build_task_dispatch_tool
 from app.application.tools.capability_tools import build_capability_tools, capability_hint, STABLE_CAPABILITY_POLICY
 from app.application.agents.personal_skill_context import SkillCatalogMiddleware
@@ -160,6 +161,10 @@ class MainAgentFactory:
                 middlewares=self._resilience(),
             ),
             # 4. 长期记忆写路径
+            FunctionTool(
+                build_activate_preferences_tool(self._preference_store, self._bus),
+                middlewares=self._resilience(),
+            ),
             FunctionTool(
                 build_remember_preference_tool(self._preference_store, self._bus),
                 middlewares=self._resilience(),

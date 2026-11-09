@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""子 Agent 偏好注入单测（task_dispatch 服务端注入）。
+"""子 Agent 只接收买家本轮已经批准的偏好。
 
 背景：偏好原来只注入主 Agent 上下文，子 Agent 拿不到，只能靠主 Agent 把偏好
 抄进 demands——这是**软约束**，模型漏抄就静默降级成无偏好推荐，不报错也无告警。
@@ -12,6 +12,7 @@
     4. 读记忆失败只跳过注入，不能让派发挂掉。
 """
 from agentscope.message import AssistantMsg
+import pytest
 
 from app.application.memory.preference_selector import PreferenceSelector
 from app.application.tools.task_dispatch_tool import build_task_dispatch_tool
@@ -23,6 +24,13 @@ from app.infrastructure.persistence.json_file_stores import JsonFilePreferenceSt
 SNAPSHOT = ShoppingContextSnapshot(
     shopping_session_id="s1", buyer_id="buyer-001", locale="zh-CN", currency="CNY",
 )
+
+
+@pytest.fixture(autouse=True)
+def clear_preference_activation():
+    ShoppingContext.clear_preference_activation("buyer-001", "s1")
+    yield
+    ShoppingContext.clear_preference_activation("buyer-001", "s1")
 
 
 class RecordingWorker:
@@ -74,6 +82,7 @@ class TestSearchAgentInjection:
         tool = _tool(search, trade, store)
 
         token = ShoppingContext.set(SNAPSHOT)
+        ShoppingContext.activate_preferences([("memory-1","dislike","不要塑料材质",1)],["合成聚合物"])
         try:
             await tool(subagent_type="search_agent", demands="找个 300 元内的旅行三件套")
         finally:
@@ -91,6 +100,7 @@ class TestSearchAgentInjection:
         tool = _tool(search, trade, store)
 
         token = ShoppingContext.set(SNAPSHOT)
+        ShoppingContext.activate_preferences([("memory-1","dislike","不要塑料材质",1)],["合成聚合物"])
         try:
             await tool(subagent_type="search_agent", demands="找旅行三件套")
         finally:
@@ -157,8 +167,8 @@ class TestGuards:
 
         assert len(search.seen) == 1
 
-    async def test_store_failure_skips_injection_not_dispatch(self, tmp_path):
-        """读记忆失败只是少了个性化，派发本身必须照常完成。"""
+    async def test_store_failure_does_not_matter_after_no_activation(self, tmp_path):
+        """未批准时不读取偏好库，派发本身照常完成。"""
 
         class BrokenStore(JsonFilePreferenceStore):
             async def list_by_buyer(self, buyer_id: str):
@@ -186,8 +196,8 @@ class TestGuards:
 
         assert "<buyer-preferences>" not in _texts(search.seen)
 
-    async def test_dislike_survives_top_k_zero(self, tmp_path):
-        """top_k=0 也要保住黑名单——安全底线在子 Agent 侧同样成立。"""
+    async def test_approved_dislike_is_injected_even_when_top_k_zero(self, tmp_path):
+        """已经批准的偏好不再受召回 top_k 影响。"""
         search, trade = RecordingFactory(), RecordingFactory()
         store = await _seeded_store(
             tmp_path, ("dislike", "不要塑料材质"), ("like", "喜欢小众设计"),
@@ -195,6 +205,7 @@ class TestGuards:
         tool = _tool(search, trade, store, preference_top_k=0)
 
         token = ShoppingContext.set(SNAPSHOT)
+        ShoppingContext.activate_preferences([("memory-1","dislike","不要塑料材质",1)],["合成聚合物"])
         try:
             await tool(subagent_type="search_agent", demands="找旅行三件套")
         finally:

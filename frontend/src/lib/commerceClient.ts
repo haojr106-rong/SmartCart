@@ -579,7 +579,7 @@ export class CommerceClient {
         if (outcome === "interrupt" && !this.snapshot.toolApprovals?.length)
           fail("当前页面暂不支持此确认流程，请重新描述需求。");
         else if (current())
-          this.update({ status: "idle", step: this.snapshot.toolApprovals?.length ? "请确认长期记忆变更" : "已为你整理好选购建议" });
+          this.update({ status: "idle", step: this.snapshot.toolApprovals?.length ? "请确认偏好使用或长期记忆变更" : "已为你整理好选购建议" });
       },
       onRunErrorEvent: ({ event }) => {
         terminal = true;

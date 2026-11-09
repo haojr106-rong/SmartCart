@@ -2,7 +2,7 @@
 """permissions
 
 订单工具只准备持久确认资源，实际交易由买家点击业务确认卡后提交。
-记忆写工具由 MemoryPermissionMiddleware 强制进入 AgentScope 原生 ASK，
+记忆写工具和本轮偏好启用工具由 MemoryPermissionMiddleware 强制进入 AgentScope 原生 ASK，
 恢复旧会话的 allow 规则也不能跳过该审批。计划工具与调度工具继续显式放行。
 
 不用 BYPASS/DONT_ASK 全局模式：保持权限引擎生效，只精准放行已知工具，

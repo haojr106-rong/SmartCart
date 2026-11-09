@@ -36,6 +36,10 @@ _current_snapshot: ContextVar[Optional[ShoppingContextSnapshot]] = ContextVar(
     default=None,
 )
 
+# 工具可能在独立 asyncio Task 中执行，子任务内修改 ContextVar 不会回传父任务。
+# 因此本轮偏好授权按买家+会话放在进程内临时表，由 orchestrator 在轮次边界清理。
+_run_preference_activations: dict[tuple[str, str], tuple[tuple[tuple[str, str, str, int], ...], tuple[str, ...]]] = {}
+
 
 class ShoppingContext:
     @staticmethod
@@ -75,6 +79,33 @@ class ShoppingContext:
         if snapshot is None:
             return
         _current_snapshot.set(replace(snapshot, excluded_material_tags=tuple(dict.fromkeys(tags))))
+
+    @staticmethod
+    def activate_preferences(preferences: list[tuple[str, str, str, int]], excluded_material_tags: list[str]) -> None:
+        snapshot = _current_snapshot.get()
+        if snapshot is None:
+            raise RuntimeError("偏好启用需要当前买家上下文")
+        _run_preference_activations[(snapshot.buyer_id, snapshot.shopping_session_id)] = (
+            tuple(preferences), tuple(dict.fromkeys(excluded_material_tags)),
+        )
+
+    @staticmethod
+    def current_activated_preferences() -> tuple[tuple[str, str, str, int], ...]:
+        snapshot = _current_snapshot.get()
+        if snapshot is None:
+            return ()
+        return _run_preference_activations.get((snapshot.buyer_id, snapshot.shopping_session_id), ((), ()))[0]
+
+    @staticmethod
+    def current_activated_material_tags() -> tuple[str, ...]:
+        snapshot = _current_snapshot.get()
+        if snapshot is None:
+            return ()
+        return _run_preference_activations.get((snapshot.buyer_id, snapshot.shopping_session_id), ((), ()))[1]
+
+    @staticmethod
+    def clear_preference_activation(buyer_id: str, shopping_session_id: str) -> None:
+        _run_preference_activations.pop((buyer_id, shopping_session_id), None)
 
     @staticmethod
     def set_session_fence(fence: int) -> None:

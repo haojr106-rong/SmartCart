@@ -80,6 +80,29 @@ def render_preference_hint(preferences: Sequence[BuyerPreference]) -> str:
     )
 
 
+def render_preference_candidates(preferences: Sequence[BuyerPreference]) -> str:
+    """渲染尚未获买家授权的偏好候选；候选不能直接参与回答或筛选。"""
+    rows = [
+        {
+            "memory_id": p.memory_id,
+            "version": p.version,
+            "kind": p.kind,
+            "statement": p.statement,
+        }
+        for p in preferences
+        if p.memory_id
+    ]
+    import json
+    return (
+        '<preference-candidates active="false">\n'
+        + json.dumps(rows, ensure_ascii=False)
+        + "\n</preference-candidates>\n"
+        "以上只是本轮相关候选，尚未获买家授权，不能用于回答、筛选或排序。"
+        "仅在具体商品检索、比较或推荐中需要个性化时，调用 activate_preferences_tool 申请本轮启用；"
+        "商品知识、参数解释、价格带或避坑问题不得申请启用。"
+    )
+
+
 class PreferenceSelector:
     def __init__(
         self,
