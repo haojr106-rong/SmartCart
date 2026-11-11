@@ -364,12 +364,12 @@ export default function App() {
         <button
           className="brand"
           onClick={() => switchView("shopping")}
-          aria-label="Globex 环球好物首页"
+          aria-label="SmartCart 智能导购首页"
         >
           <Icon name="globe" className="brand-mark" />
           <span>
-            <span className="brand-name">Globex</span>
-            <span className="brand-subtitle">YOUR SHOPPING COMPANION</span>
+            <span className="brand-name">SmartCart</span>
+            <span className="brand-subtitle">AI SHOPPING ASSISTANT</span>
           </span>
         </button>
         <button className="new-chat" onClick={newShopping} disabled={busy}>
@@ -429,7 +429,7 @@ export default function App() {
               <button className="mobile-menu-toggle icon-button" aria-label="打开导航" aria-expanded={mobileNavOpen} aria-controls="workspace-navigation" onClick={() => setMobileNavOpen(!mobileNavOpen)}>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
               </button>
-              <div><div className="breadcrumb"><span>Globex</span><span>／</span><span>环球好物</span></div>
+              <div><div className="breadcrumb"><span>SmartCart</span><span>／</span><span>智能导购</span></div>
               <h1>{view === "shopping" ? agent.history.find(item => item.id === agent.sessionId)?.title ?? "新的选购" : navItems.find((item) => item.id === (view === "favorites" ? "orders" : view))?.label}</h1></div>
             </div>
             <div className="topbar-actions">
@@ -456,9 +456,12 @@ export default function App() {
               {!hasConversation ? (
                 <section className="welcome-panel">
                   <div className="welcome-symbol"><Icon name="globe" /><span><Icon name="spark" /></span></div>
-                  <div className="eyebrow">A WORLD OF GOOD FINDS</div>
-                  <h2>你的下一件好物，<br /><em>从这里开始。</em></h2>
-                  <p>告诉我你的期待，剩下的，一起慢慢选。</p>
+                  <div className="eyebrow">SMART SHOPPING, MADE SIMPLE</div>
+                  <h2>想买什么，直接说。<br /><em>SmartCart 帮你挑。</em></h2>
+                  <p>预算、用途、材质和配送要求都可以告诉我，智能筛选更省心。</p>
+                  <div className="category-strip" aria-label="热门选购分类">
+                    <span>热门选购</span><button onClick={() => submit("帮我推荐适合通勤的数码产品")}>数码</button><button onClick={() => submit("帮我推荐轻便耐用的旅行装备")}>旅行装备</button><button onClick={() => submit("帮我推荐日常实用的家居好物")}>家居</button><button onClick={() => submit("帮我推荐高性价比的服饰")}>服饰</button>
+                  </div>
                   <div className="welcome-ideas">
                     <button disabled={busy} onClick={() => submit(STARTERS[0])}><span className="starter-icon"><Icon name="bag" /></span><span><strong>旅行好物，一起挑</strong><small>看看 12 款装备 · 单件 500 元内</small></span><Icon name="arrow" /></button>
                     <button disabled={busy} onClick={() => submit(STARTERS[1])}><span className="starter-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="12" width="4" height="8" rx="2"/><rect x="17" y="12" width="4" height="8" rx="2"/></svg></span><span><strong>日常好声音</strong><small>挑一副适合通勤的耳机</small></span><Icon name="arrow" /></button>
@@ -677,7 +680,7 @@ export default function App() {
               <ShoppingPlans {...planProps} compact />
             </div>}
             <label htmlFor="query" className="sr-only">
-              告诉 Globex 你想寻找的好物
+              告诉 SmartCart 你想寻找的好物
             </label>
             <button type="button" className="composer-plan-toggle"
               disabled={busy||!!agent.toolApprovals?.length||!!agent.recoverableRunId||agent.confirmations.some(c=>c.status==="pending"&&!c.expired)}
@@ -721,7 +724,7 @@ export default function App() {
             </div>
           </form>
           <footer className="preview-footer">
-            <span>Globex 环球好物</span>
+            <span>SmartCart 智能导购</span>
             <span>·</span>
             <span>好物跨越距离，选择回到你心里</span>
           </footer>

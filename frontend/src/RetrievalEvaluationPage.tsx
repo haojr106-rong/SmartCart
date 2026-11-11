@@ -22,12 +22,12 @@ async function readEvaluation(path: string): Promise<Record<string, unknown>> {
 export default function RetrievalEvaluationPage() {
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = "Globex · 商品检索评测";
+    document.title = "SmartCart · 商品检索评测";
     return () => { document.title = previousTitle; };
   }, []);
   return <main className="evaluation-page">
     <header className="evaluation-page-header">
-      <a className="evaluation-page-brand" href="/" aria-label="返回 Globex 选购"><Icon name="globe" /><span>Globex<span>检索评测工作台</span></span></a>
+      <a className="evaluation-page-brand" href="/" aria-label="返回 SmartCart 选购"><Icon name="globe" /><span>SmartCart<span>检索评测工作台</span></span></a>
       <a className="evaluation-page-back" href="/"><Icon name="arrow" />返回选购</a>
     </header>
     <RetrievalEvaluation request={readEvaluation} />

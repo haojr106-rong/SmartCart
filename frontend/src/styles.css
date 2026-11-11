@@ -2481,7 +2481,7 @@ main {
   }
 }
 
-/* Globex 工作台：冰蓝底色、柔和插画与清晰的阅读层次。 */
+/* 旧版工作台基础样式；底部 SmartCart 主题负责品牌视觉覆盖。 */
 :root {
   --paper: #f3f6fc;
   --sidebar-width: 220px;
@@ -2809,3 +2809,122 @@ main { margin-left: var(--sidebar-width); padding: 26px 50px 255px; }
 .workspace-page-title { min-width: 0; }
 .workspace-page-title > div { min-width: 0; }
 .workspace-page-title h1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: min(45vw, 600px); }
+
+/* SmartCart：橙白电商工作台。保留原有布局和组件行为，仅重塑品牌视觉。 */
+:root {
+  --paper: #f5f5f5;
+  --ink: #222;
+  --green: #ff5000;
+  --sage: #fff0e8;
+  --muted: #666;
+  --line: #eeeeee;
+  --orange: #ff5000;
+}
+body { background: #f5f5f5; color: #222; }
+::selection { background: #ffe1cf; color: #b93600; }
+.workbench-atmosphere { background: radial-gradient(circle at 80% 8%, #fff0e5 0, transparent 34%), #f5f5f5; }
+.workbench-atmosphere::before { opacity: 0; }
+.workbench-atmosphere::after { background: linear-gradient(180deg, #fff8f2 0, #f5f5f5 42%, #f5f5f5 100%); }
+.quiet-background .workbench-atmosphere { background: #f5f5f5; }
+.sidebar { background: #fff; border-right-color: #ececec; box-shadow: 4px 0 18px #4420000a; }
+.brand { color: #ff5000; }
+.brand-mark { color: #ff5000; stroke-width: 1.8; }
+.brand-name { color: #ff5000; font-weight: 800; letter-spacing: -1.1px; }
+.brand-subtitle { color: #9a6b58; letter-spacing: 1px; }
+.new-chat { color: #fff; background: linear-gradient(135deg, #ff7a00, #ff3d00); border-radius: 18px; justify-content: center; box-shadow: 0 6px 16px #ff500026; }
+.new-chat:hover { color: #fff; background: linear-gradient(135deg, #ff8b16, #ff5000); box-shadow: 0 8px 20px #ff500030; }
+.nav-item { color: #555; border-radius: 10px; }
+.nav-item.active { color: #ff5000; background: #fff1e8; box-shadow: inset 3px 0 #ff5000; font-weight: 650; }
+.nav-item:hover,.history-short:hover,.history-short.current { color: #ff5000; background: #fff7f2; }
+.nav-label,.sidebar-empty { color: #999; }
+.sidebar-note { background: linear-gradient(135deg,#fff7ef,#fff1e5); border-color: #ffe0c8; }
+.sidebar-note-icon,.sidebar-note strong { color: #e85b18; }
+.sidebar-note p,.profile-caption { color: #9a7564; }
+.profile { border-top-color: #eee; }
+.avatar { color: #fff; background: linear-gradient(135deg,#ff8b27,#ff5000); border-color: #fff; }
+.profile-name { color: #333; }
+.profile > svg { color: #ff7a35; }
+.topbar { background: #ffffffd9; border: 1px solid #eee; border-radius: 16px; padding: 10px 16px; box-shadow: 0 5px 18px #5b2b0b0a; }
+.workspace-page-title h1 { color: #222; }
+.breadcrumb,.breadcrumb span:last-child { color: #999; }
+.breadcrumb span:first-child { color: #ff5000; font-weight: 700; }
+.location { color: #e75b19; background: #fff6f0; border-color: #ffe4d2; }
+.icon-button { color: #777; background: #fff; border-color: #eee; }
+.icon-button:hover,.atmosphere-toggle[aria-pressed=true] { color: #ff5000; background: #fff3eb; border-color: #ffc9a8; }
+.welcome-panel { padding-top: 38px; }
+.welcome-symbol { color: #fff; background: linear-gradient(145deg,#ff8a00,#ff3d00); border: 0; border-radius: 22px; box-shadow: 0 14px 34px #ff50002b; }
+.welcome-symbol > span { color: #ffd4b4; }
+.welcome-panel .eyebrow { color: #ff7a34; font-weight: 700; }
+.welcome-panel h2 { color: #222; }
+.welcome-panel h2 em { color: #ff5000; }
+.welcome-panel > p { color: #777; }
+.category-strip { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin: -8px auto 22px; color: #999; font-size: 12px; }
+.category-strip > span { color: #ff5000; font-weight: 700; }
+.category-strip button { padding: 5px 11px; border: 1px solid #f0e2da; border-radius: 14px; color: #666; background: #fff; font-size: 12px; }
+.category-strip button:hover { color: #ff5000; border-color: #ffb58c; background: #fff8f3; }
+.welcome-ideas button { background: #fff; border-color: #eee; border-radius: 16px; box-shadow: 0 7px 20px #6230130b; }
+.welcome-ideas button:hover { border-color: #ffb98f; background: #fffaf7; box-shadow: 0 12px 28px #ff500016; }
+.starter-icon,.welcome-ideas button:nth-child(2) .starter-icon,.welcome-ideas button:nth-child(3) .starter-icon { color: #ff5000; background: #fff0e7; }
+.welcome-ideas strong { color: #333; }
+.welcome-ideas small { color: #888; }
+.welcome-ideas button > svg { color: #ff8a4d; }
+.welcome-caption { color: #a47b68; }
+.welcome-plan-disclosure > summary { border-top-color: #eadfd8; }
+.query-bubble { color: #563524; background: #fff2e9; border-color: #ffe2cf; }
+.query-avatar { color: #fff; background: linear-gradient(135deg,#ff8a27,#ff5000); }
+.assistant-mark { color: #ff5000; background: #fff1e8; border-color: #ffe2d0; }
+.assistant-label { color: #333; }
+.assistant-label span { color: #999; }
+.assistant-text,.assistant-text strong { color: #444; }
+.assistant-text .markdown a { color: #ff5000; }
+.assistant-text .markdown th { background: #fff3ea; color: #75442e; }
+.assistant-text .markdown td,.assistant-text .markdown th { border-color: #f1ded3; }
+.live-dot,.typing:after { background: #ff5000; }
+.results-label strong { color: #333; }
+.results-action,.detail-button { color: #ff5000; }
+.product-card { border-color: #eee; border-radius: 14px; background: #fff; box-shadow: 0 5px 18px #4220000b; }
+.product-card:hover { border-color: #ffb487; box-shadow: 0 14px 30px #ff500018; }
+.product-card.selected { border-color: #ff5000; box-shadow: 0 0 0 1px #ff5000; }
+.product-visual { background: #fafafa; }
+.product-title { color: #222; font-weight: 650; }
+.product-title:hover { color: #ff5000; }
+.product-subtitle,.product-topline,.product-footer { color: #888; }
+.rating i { color: #ff9f1a; }
+.price,.detail-price,.compare-price { color: #ff5000; font-weight: 750; }
+.price-kind { color: #999; }
+.card-landed { color: #d85b23; background: #fff4ed; border-color: #ffe0cc; }
+.compare-check input:checked { background: #ff5000; border-color: #ff5000; }
+.heart:hover,.heart.saved { color: #ff5000; }
+.heart.saved svg { fill: #ff500025; }
+.suggestion { color: #666; background: #fff; border-color: #eee; }
+.suggestion:hover { color: #ff5000; background: #fff5ee; border-color: #ffbf99; }
+.composer-dock { background: linear-gradient(0deg,#f5f5f5 3%,#f5f5f5ed 68%,#f5f5f500 100%); }
+.composer { background: #fff; border: 2px solid #ff7a24; border-radius: 22px; box-shadow: 0 9px 28px #ff500016; }
+.composer:focus-within { border-color: #ff5000; box-shadow: 0 10px 32px #ff500020,0 0 0 3px #ff50000d; }
+.composer textarea { color: #333; }
+.composer textarea::placeholder { color: #aaa; }
+.plan-picker-toggle,.selected-plan { color: #e65b1a; background: #fff3eb; border-color: #ffe0cb; }
+.composer-plan-toggle { color: #888; border-left-color: #eee; }
+.composer-plan-toggle:hover { color: #ff5000; }
+.composer-hint,.preview-footer { color: #999; }
+.composer-hint svg { color: #ff8b4b; }
+.send-button { background: linear-gradient(135deg,#ff7a00,#ff3d00); border-radius: 12px; box-shadow: 0 5px 13px #ff500024; }
+.send-button:hover { background: linear-gradient(135deg,#ff8b17,#ff5000); }
+.send-button.stop { color: #ff5000; background: #fff0e8; }
+.compare-bar { background: linear-gradient(90deg,#ff6a00,#ff3d00); }
+.compare-bar .compare-go { color: #ff5000; background: #fff; }
+.toast { background: #333; }
+.shopping-form button,.workspace-save { background: linear-gradient(135deg,#ff7a00,#ff5000); }
+.orders-toolbar [aria-pressed=true] { background: #ff5000; }
+.order-status { color: #d9571b; background: #fff0e7; }
+.sku-option.selected,.sku-option[aria-pressed=true] { color: #ff5000; background: #fff3ec; border-color: #ff9a62; }
+@media (max-width: 760px) {
+  .sidebar { background: #fffffff7; box-shadow: 15px 0 50px #6b2a101c; }
+  .nav-scrim { background: #54230e45; }
+  .topbar { padding: 8px 10px; border-radius: 13px; }
+}
+@media (max-width: 530px) {
+  .category-strip { margin-top: -3px; }
+  .category-strip > span { flex-basis: 100%; }
+  .category-strip button { font-size: 11px; }
+}

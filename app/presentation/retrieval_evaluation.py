@@ -258,7 +258,7 @@ def _standard_public(standard: dict[str, Any]) -> dict[str, Any]:
 
 def build_preview_app() -> FastAPI:
     """仅用于本机仪表盘预览，不执行完整业务服务的生命周期。"""
-    api = FastAPI(title="Globex 检索评测只读预览")
+    api = FastAPI(title="SmartCart 检索评测只读预览")
     api.state.retrieval_evaluation_preview = True
     register_retrieval_evaluation_routes(api)
 
