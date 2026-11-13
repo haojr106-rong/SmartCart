@@ -1,0 +1,332 @@
+{
+  "matrix_complete": true,
+  "missing": [],
+  "strategies": {
+    "current": {
+      "runs": 6,
+      "passed": 0,
+      "success_rate": 0,
+      "input_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "output_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "total_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "cache_read_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "cache_write_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "reported_cost": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "physical_model_calls": 6,
+      "summary_calls": 0,
+      "lookup_calls": 0,
+      "ordinary_round_p95_ms": 45219,
+      "compacted_round_p95_ms": null,
+      "manual_compaction_p95_ms": null,
+      "usage_by_kind": {
+        "business": {
+          "input_tokens": {
+            "total": null,
+            "observed_sum": null,
+            "known": 0,
+            "unknown": 6
+          },
+          "output_tokens": {
+            "total": null,
+            "observed_sum": null,
+            "known": 0,
+            "unknown": 6
+          }
+        }
+      },
+      "model_ttft_p95_ms": null,
+      "model_ttft_known_calls": 0,
+      "scenario_p95_ms": 48203,
+      "by_layer": {
+        "context": {
+          "runs": 4,
+          "passed": 0
+        },
+        "agent": {
+          "runs": 2,
+          "passed": 0
+        },
+        "cache_replay": {
+          "runs": 0,
+          "passed": 0
+        },
+        "skill_replay": {
+          "runs": 0,
+          "passed": 0
+        }
+      },
+      "peak_actual_input": null,
+      "mean_final_context_estimated_tokens": 49692.5,
+      "mean_final_product_duplicate_ratio": 0.625,
+      "loop_notices": 0,
+      "error_runs": 6,
+      "model_contract": {
+        "observed_calls": 6,
+        "response_models": [],
+        "unknown_identity_calls": 6,
+        "mismatched_identity_calls": 0,
+        "protocol_violation_calls": 0,
+        "unknown_protocol_calls": 6
+      },
+      "cache_read_ratio": null,
+      "prefix_diagnostics": {
+        "observed_calls": 6,
+        "comparable_calls": 0,
+        "system_changes": null,
+        "tool_changes": null,
+        "history_rewrites": null,
+        "append_calls": null
+      },
+      "replay_stage_ttft_p95_ms": {
+        "initial": null,
+        "followup": null,
+        "after_rebuild": null
+      },
+      "efficiency_diagnostics": {
+        "lookup_observed": 0,
+        "lookup_errors": null,
+        "lookup_normalized": null,
+        "lookup_pages_with_more": null,
+        "state_emitted": null,
+        "state_skipped": null,
+        "prune_rewrites": 2,
+        "archived_results": 42,
+        "request_reasons": {
+          "buyer_request": 6
+        },
+        "estimated_sections": {
+          "system": 14109,
+          "state": 0,
+          "product": 57465,
+          "history": 43651,
+          "tool_schema": 20101
+        },
+        "measured_requests": 6,
+        "visible_evidence_answers": 1,
+        "model_elapsed_p95_ms": 45077.99999999952,
+        "after_first_text_p95_ms": null
+      },
+      "coverage_complete": true
+    },
+    "candidate": {
+      "runs": 6,
+      "passed": 0,
+      "success_rate": 0,
+      "input_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "output_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "total_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "cache_read_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "cache_write_tokens": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "reported_cost": {
+        "total": null,
+        "observed_sum": null,
+        "known": 0,
+        "unknown": 6
+      },
+      "physical_model_calls": 6,
+      "summary_calls": 0,
+      "lookup_calls": 0,
+      "ordinary_round_p95_ms": 45390,
+      "compacted_round_p95_ms": null,
+      "manual_compaction_p95_ms": null,
+      "usage_by_kind": {
+        "business": {
+          "input_tokens": {
+            "total": null,
+            "observed_sum": null,
+            "known": 0,
+            "unknown": 6
+          },
+          "output_tokens": {
+            "total": null,
+            "observed_sum": null,
+            "known": 0,
+            "unknown": 6
+          }
+        }
+      },
+      "model_ttft_p95_ms": null,
+      "model_ttft_known_calls": 0,
+      "scenario_p95_ms": 46562,
+      "by_layer": {
+        "context": {
+          "runs": 4,
+          "passed": 0
+        },
+        "agent": {
+          "runs": 2,
+          "passed": 0
+        },
+        "cache_replay": {
+          "runs": 0,
+          "passed": 0
+        },
+        "skill_replay": {
+          "runs": 0,
+          "passed": 0
+        }
+      },
+      "peak_actual_input": null,
+      "mean_final_context_estimated_tokens": 50232.25,
+      "mean_final_product_duplicate_ratio": 0.625,
+      "loop_notices": 0,
+      "error_runs": 6,
+      "model_contract": {
+        "observed_calls": 6,
+        "response_models": [],
+        "unknown_identity_calls": 6,
+        "mismatched_identity_calls": 0,
+        "protocol_violation_calls": 0,
+        "unknown_protocol_calls": 6
+      },
+      "cache_read_ratio": null,
+      "prefix_diagnostics": {
+        "observed_calls": 6,
+        "comparable_calls": 0,
+        "system_changes": null,
+        "tool_changes": null,
+        "history_rewrites": null,
+        "append_calls": null
+      },
+      "replay_stage_ttft_p95_ms": {
+        "initial": null,
+        "followup": null,
+        "after_rebuild": null
+      },
+      "efficiency_diagnostics": {
+        "lookup_observed": 0,
+        "lookup_errors": null,
+        "lookup_normalized": null,
+        "lookup_pages_with_more": null,
+        "state_emitted": 6,
+        "state_skipped": 0,
+        "prune_rewrites": 2,
+        "archived_results": 42,
+        "request_reasons": {
+          "buyer_request": 6
+        },
+        "estimated_sections": {
+          "system": 12899,
+          "state": 3056,
+          "product": 79592,
+          "history": 22190,
+          "tool_schema": 20888
+        },
+        "measured_requests": 6,
+        "visible_evidence_answers": 1,
+        "model_elapsed_p95_ms": 45108.99999999856,
+        "after_first_text_p95_ms": null
+      },
+      "coverage_complete": true
+    }
+  },
+  "paired_intervals": {
+    "candidate": {
+      "input_reduction": {
+        "unit": "scenario",
+        "scenarios": 0,
+        "estimate": null,
+        "ci95": null
+      },
+      "total_token_reduction": {
+        "unit": "scenario",
+        "scenarios": 0,
+        "estimate": null,
+        "ci95": null
+      },
+      "success_difference": {
+        "unit": "scenario",
+        "scenarios": 6,
+        "estimate": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "billing_against_current": {
+        "unit": "scenario",
+        "scenarios": 0,
+        "estimate": null,
+        "ci95": null
+      }
+    }
+  },
+  "gates": {
+    "candidate": {
+      "status": "BLOCKED",
+      "reasons": [
+        "确定性安全回归未通过或未执行",
+        "当前档位不是留出发布评测",
+        "响应模型标识未知或与请求不一致，实际模型一致性未验证",
+        "存在工具协议违约或协议观测缺失",
+        "6 次关键场景失败",
+        "累计实际 input usage 不完整",
+        "完整成本配对未覆盖全部场景",
+        "包含输出的实际用量不完整",
+        "缓存目标缺少经过验证的计费单位与来源",
+        "缓存目标未证明完整计费收益"
+      ],
+      "ordinary_p95_ratio": 1.0037815962316725,
+      "new_failure_cases": [],
+      "production_deploy_authorized": false,
+      "billing_reduction": null
+    }
+  },
+  "failure_count": 12,
+  "unknown_currency": true
+}

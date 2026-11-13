@@ -1,0 +1,94 @@
+{
+  "model": "mindbridge-qwen2.5-7b-ft:latest",
+  "cases": 12,
+  "passed": 1,
+  "results": [
+    {
+      "id": "noise",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "temporary",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "third_person",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "hypothetical",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "injection",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "stable_noise",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "negative_scope",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "negative",
+      "facts": [
+        {
+          "kind": "like",
+          "statement": "不喜欢羊毛围巾",
+          "conflicts": []
+        }
+      ],
+      "checks": {
+        "count": true,
+        "scope": true,
+        "noise": true,
+        "polarity": false,
+        "conflict": true
+      },
+      "passed": false
+    },
+    {
+      "id": "duplicate",
+      "facts": [
+        {
+          "kind": "like",
+          "statement": "喜欢蓝色衣服",
+          "conflicts": []
+        }
+      ],
+      "checks": {
+        "count": true,
+        "scope": true,
+        "noise": true,
+        "polarity": true,
+        "conflict": true
+      },
+      "passed": true
+    },
+    {
+      "id": "scope_distinction",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "conflict",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    },
+    {
+      "id": "not_conflict",
+      "passed": false,
+      "error": "MemoryUnavailable"
+    }
+  ],
+  "limitation": "小样本规则评测；不代表完整事实蕴含、召回质量或生产准确率"
+}
